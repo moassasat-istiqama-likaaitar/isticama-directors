@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1418">
+<title>فضاء المديرين — اللقاء العام</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0b1418; --bg2:#0f2a2c; --card:rgba(255,255,255,.04); --card-line:rgba(255,255,255,.08);
+    --field:#121d22; --field-line:#3a5459; --ink:#f1f5f4; --muted:#8a9a9c;
+    --mint:#19e3c0; --mint2:#0fb89c; --glow:rgba(25,227,192,.35);
+    /* ألوان الشعار — بجرعات صغيرة */
+    --amber:#F7A64B; --brown:#BB642F; --flame:#EE2B0D;
+  }
+  * { box-sizing:border-box; }
+  html { background:var(--bg); }
+  body { margin:0; min-height:100vh; font-family:'Cairo',sans-serif; color:var(--ink);
+         background:radial-gradient(120% 60% at 50% -10%, #11504a 0%, var(--bg2) 35%, var(--bg) 70%); background-attachment:fixed; overflow-x:hidden; }
+
+  .orbs { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .orbs span { position:absolute; border-radius:50%; }
+  .orbs .w { background:radial-gradient(circle at 35% 30%, #fff, #d9dede); box-shadow:0 10px 40px rgba(0,0,0,.4); }
+  .orbs .d { background:radial-gradient(circle at 35% 30%, #3a4448, #1b2326); border:1px solid rgba(255,255,255,.06); }
+  .orbs .o1 { width:80px; height:80px; bottom:140px; left:-44px; opacity:.85; }
+  .orbs .o2 { width:150px; height:150px; bottom:-60px; right:-50px; opacity:.6; }
+  .orbs .o3 { width:60px; height:60px; top:30px; right:-18px; }
+
+  .wrap { position:relative; z-index:1; max-width:560px; margin:0 auto; padding:20px 16px 40px; }
+  .brand { display:inline-block; font-size:12px; font-weight:700; color:var(--amber);
+           border:1px solid rgba(247,166,75,.4); border-radius:999px; padding:3px 12px; background:rgba(247,166,75,.07); }
+  h1 { font-size:26px; margin:10px 0 0; font-weight:800; line-height:1.35; }
+  .sub { color:var(--muted); font-size:14px; margin-top:4px; }
+  .rule { margin-top:12px; width:96px; }
+  .rule i { display:block; height:3px; border-radius:3px; background:linear-gradient(90deg, transparent, var(--amber)); }
+  .rule i + i { height:2px; width:62%; margin-top:4px; background:linear-gradient(90deg, transparent, var(--flame)); opacity:.85; }
+
+  .card { background:var(--card); border:1px solid var(--card-line); border-radius:24px; padding:20px; margin-top:18px;
+          backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,.35); }
+  label.f { display:block; font-weight:700; font-size:14px; margin:16px 0 8px; color:#dfe7e6; }
+  input, select { width:100%; padding:14px 16px; border:1.5px solid var(--field-line); border-radius:16px; font:inherit; font-size:16px;
+                  background:var(--field); color:var(--ink); outline:none; }
+  input::placeholder { color:#5b6b6e; }
+  input:focus, select:focus { border-color:var(--mint); box-shadow:0 0 0 3px rgba(25,227,192,.15); }
+  select { appearance:none; -webkit-appearance:none;
+           background-image:linear-gradient(45deg, transparent 50%, var(--mint) 50%), linear-gradient(135deg, var(--mint) 50%, transparent 50%);
+           background-position:18px 52%, 24px 52%; background-size:6px 6px; background-repeat:no-repeat; padding-left:40px; }
+  select option { background:#121d22; color:var(--ink); }
+  button { width:100%; padding:15px; border:0; border-radius:16px; font:inherit; font-size:17px; font-weight:800; cursor:pointer; margin-top:20px;
+           background:linear-gradient(135deg, #2af5d0, var(--mint2)); color:#04201b; box-shadow:0 10px 28px var(--glow); }
+  button:active { transform:scale(.98); }
+  button:disabled { opacity:.55; }
+  button.ghost { background:transparent; color:var(--ink); border:1.5px solid var(--field-line); box-shadow:none; font-weight:700; font-size:15px; padding:12px; margin-top:0; }
+  .err { color:#ff8a6b; margin-top:12px; min-height:1em; font-size:14px; }
+  .hidden { display:none !important; }
+
+  /* لوحة المدرسة */
+  .bar { display:flex; gap:8px; margin-top:16px; }
+  .bar button { flex:1; }
+  .stats { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:8px; margin-top:16px; }
+  .stats div { background:var(--card); border:1px solid var(--card-line); border-radius:18px; padding:10px 6px; text-align:center; }
+  .stats b { display:block; font-size:28px; line-height:1.2; }
+  .stats span { font-size:12px; color:var(--muted); }
+  .stats .main { border-color:rgba(25,227,192,.35); background:rgba(25,227,192,.07); }
+  .stats .main b { color:var(--mint); font-size:34px; }
+
+  .stats.two { grid-template-columns:1fr 1fr; }
+  .stats.two b { font-size:22px; }
+  .stats .left b { color:var(--amber); }
+  .progress { margin-top:12px; height:10px; border-radius:999px; background:var(--field); border:1px solid var(--field-line); overflow:hidden; }
+  .progress i { display:block; height:100%; width:0; border-radius:999px; background:linear-gradient(90deg, var(--mint2), var(--mint)); transition:width .4s; }
+  .note { margin-top:8px; font-size:13px; color:var(--muted); min-height:1em; }
+  .wsList { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .wsList span { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; font-size:13px;
+                 background:var(--card); border:1px solid var(--card-line); }
+  .wsList i { width:10px; height:10px; border-radius:50%; }
+  .wsList b { color:var(--ink); }
+
+  .search { margin-top:16px; }
+  .list { margin-top:12px; display:grid; gap:10px; }
+  .person { background:var(--card); border:1px solid var(--card-line); border-radius:18px; padding:12px 14px;
+            display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center; }
+  .num { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; font-size:13px; font-weight:700;
+         background:var(--field); border:1px solid var(--field-line); color:var(--muted); }
+  .person .n { font-weight:800; font-size:16px; }
+  .person .n small { font-weight:400; color:var(--muted); font-size:13px; }
+  .person .m { color:var(--muted); font-size:13px; margin-top:2px; }
+  .pill { display:inline-block; padding:3px 10px; border-radius:10px; line-height:1.6; font-size:12px; font-weight:700; color:#fff; margin-top:6px; }
+  .side { text-align:left; font-size:12px; color:var(--muted); }
+  .side .g { display:block; font-weight:700; color:#dfe7e6; }
+  .side .ok { color:var(--mint); font-weight:700; }
+  .empty { text-align:center; color:var(--muted); padding:24px; border:1.5px dashed var(--field-line); border-radius:18px; }
+</style>
+</head>
+<body>
+<div class="orbs"><span class="w o1"></span><span class="d o2"></span><span class="d o3"></span></div>
+<div class="wrap">
+
+  <!-- الدخول -->
+  <div id="login">
+    <div style="padding-top:28px"><span class="brand">فضاء المديرين</span></div>
+    <h1>إطارات مدرستي المسجّلون</h1>
+    <div class="rule"><i></i><i></i></div>
+    <div class="card">
+      <label class="f">المدرسة</label>
+      <select id="school"><option value="">— جارٍ التحميل —</option></select>
+      <label class="f">اسم المدير</label>
+      <input id="name" autocomplete="name">
+      <label class="f">الرمز</label>
+      <input id="code" type="password" inputmode="numeric">
+      <button id="go">دخول</button>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <!-- لوحة المدرسة -->
+  <div id="main" class="hidden">
+    <div style="padding-top:20px"><span class="brand" id="hello"></span></div>
+    <h1 id="schoolName"></h1>
+    <div class="sub" id="updated"></div>
+    <div class="rule"><i></i><i></i></div>
+
+    <div class="stats">
+      <div class="main"><b id="nAll">0</b><span>مسجّل</span></div>
+      <div class="left"><b id="nLeft">—</b><span>متبقٍ</span></div>
+      <div><b id="nExp">—</b><span>العدد الكلي</span></div>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="note" id="expNote"></div>
+    <div class="stats two">
+      <div><b id="nM">0</b><span>ذكور</span></div>
+      <div><b id="nF">0</b><span>إناث</span></div>
+    </div>
+    <div class="wsList" id="wsList"></div>
+
+    <div class="search"><input id="q" placeholder="بحث بالاسم أو الوظيفة"></div>
+    <div class="list" id="list"></div>
+
+    <div class="bar">
+      <button id="refresh" class="ghost" type="button">تحديث</button>
+      <button id="logout" class="ghost" type="button">خروج</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+// ⚠️ رابط تطبيق المديرين في Apps Script (ينتهي بـ /exec)
+const API = 'https://script.google.com/macros/s/AKfycbxPrwmtFIiZMBk4EuFYA7cbYdICwemoLZtoyn6717vkSKBmD1BKhVmBmzwDFOCkGt1Khw/exec';
+
+// إرسال طلب إلى Apps Script — نص عادي حتى لا يرفضه المتصفح (CORS)
+async function api(action, extra) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 30000);
+  try {
+    const r = await fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ action }, extra || {})),
+                                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'خطأ');
+    return j.data;
+  } catch (e) {
+    throw new Error(/fetch|abort|network|json/i.test(e.message || '') ? 'تعذّر الاتصال — تحقق من الإنترنت' : e.message);
+  } finally { clearTimeout(t); }
+}
+// نفس الأسماء القديمة حتى يبقى بقية الكود كما هو
+const run = (fn, ...a) => fn === 'getSchools' ? api('schools')
+  : api('staff', { school: a[0], name: a[1], code: a[2] });
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const norm = s => String(s).replace(/[ً-ْـ]/g, '').replace(/[أإآٱ]/g, 'ا')
+  .replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase();
+
+let S = { school: '', name: '', code: '', data: null };
+
+// قائمة المدارس
+run('getSchools').then(list => {
+  $('school').innerHTML = '<option value="">— اختر المدرسة —</option>' + list.map(s => `<option>${esc(s)}</option>`).join('');
+  const saved = store.get('dir', null);
+  if (saved) { $('school').value = saved.school; $('name').value = saved.name; }
+}).catch(e => $('err').textContent = e.message || 'تعذّر تحميل المدارس');
+
+$('go').addEventListener('click', login);
+$('code').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+async function login() {
+  S.school = $('school').value; S.name = $('name').value.trim(); S.code = $('code').value.trim();
+  if (!S.school) return $('err').textContent = 'اختر المدرسة';
+  if (!S.name) return $('err').textContent = 'أدخل اسمك';
+  if (!S.code) return $('err').textContent = 'أدخل الرمز';
+  $('err').textContent = '';
+  $('go').disabled = true; $('go').textContent = 'جارٍ الدخول...';
+  try {
+    await load();
+    store.set('dir', { school: S.school, name: S.name });
+    $('login').classList.add('hidden'); $('main').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  } catch (e) {
+    $('err').textContent = e.message || 'تعذّر الاتصال';
+  } finally {
+    $('go').disabled = false; $('go').textContent = 'دخول';
+  }
+}
+
+async function load() {
+  S.data = await run('getStaff', S.school, S.name, S.code);
+  render();
+}
+
+function render() {
+  const { school, staff, colors } = S.data;
+  $('hello').textContent = 'مرحباً، ' + S.name;
+  $('schoolName').textContent = 'مدرسة ' + school;
+  $('updated').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' });
+
+  $('nAll').textContent = staff.length;
+  const exp = S.data.expected;
+  if (exp) {
+    const left = Math.max(0, exp - staff.length);
+    $('nExp').textContent = exp;
+    $('nLeft').textContent = left;
+    $('bar').style.width = Math.min(100, Math.round(staff.length / exp * 100)) + '%';
+    $('expNote').textContent = staff.length > exp
+      ? 'عدد المسجّلين أكبر من العدد الكلي المصرّح به عند التسجيل'
+      : left === 0 ? 'سجّل جميع إطارات المدرسة ✔' : 'نسبة التسجيل: ' + Math.round(staff.length / exp * 100) + '%';
+  } else {
+    $('nExp').textContent = '—'; $('nLeft').textContent = '—'; $('bar').style.width = '0';
+    $('expNote').textContent = 'العدد الكلي يظهر بعد أن يسجّل مدير المدرسة في تطبيق التسجيل';
+  }
+  $('nM').textContent = staff.filter(p => p.gender === 'ذكر').length;
+  $('nF').textContent = staff.filter(p => p.gender === 'أنثى').length;
+
+  // التوزيع على الورشات
+  const byWs = {};
+  staff.forEach(p => { const k = p.ws || 'غير محددة'; byWs[k] = (byWs[k] || 0) + 1; });
+  $('wsList').innerHTML = Object.entries(byWs).sort((a, b) => b[1] - a[1]).map(([w, n]) =>
+    `<span><i style="background:${esc(colors[w] || '#6b7280')}"></i>${esc(w)} <b>${n}</b></span>`).join('');
+
+  drawList();
+}
+
+function drawList() {
+  const { staff, colors } = S.data;
+  const q = norm($('q').value.trim());
+  const rows = staff.filter(p => !q || norm([p.first, p.last, p.role].join(' ')).includes(q));
+  if (!staff.length) { $('list').innerHTML = '<div class="empty">لم يسجّل أي إطار من مدرستك بعد</div>'; return; }
+  if (!rows.length) { $('list').innerHTML = '<div class="empty">لا توجد نتيجة</div>'; return; }
+  $('list').innerHTML = rows.map((p, i) => `
+    <div class="person">
+      <span class="num">${i + 1}</span>
+      <div>
+        <div class="n">${esc(p.first)} ${esc(p.last)}</div>
+        <div class="m">${esc(p.role)}</div>
+      </div>
+    </div>`).join('');
+}
+
+$('q').addEventListener('input', drawList);
+
+$('refresh').addEventListener('click', async () => {
+  $('refresh').textContent = 'جارٍ التحديث...';
+  try { await load(); } catch (e) { alert(e.message || 'تعذّر الاتصال'); }
+  $('refresh').textContent = 'تحديث';
+});
+
+$('logout').addEventListener('click', () => {
+  S = { school: '', name: '', code: '', data: null };
+  $('code').value = '';
+  $('main').classList.add('hidden'); $('login').classList.remove('hidden');
+});
+</script>
+</body>
+</html>
