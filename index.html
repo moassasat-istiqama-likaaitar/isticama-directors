@@ -218,12 +218,14 @@ async function load() {
 }
 
 function render() {
-  const { school, staff, colors } = S.data;
+  const { school, colors } = S.data;
+  const staff = S.data.staff.filter(p => !p.via);   // العدّ: المدرسة الأساسية فقط
+  const via = S.data.staff.length - staff.length;
   $('hello').textContent = 'مرحباً، ' + S.name;
   $('schoolName').textContent = 'مدرسة ' + school;
   $('updated').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' });
 
-  $('nAll').textContent = staff.length;
+  $('nAll').textContent = staff.length + (via ? ' (+' + via + ')' : '');
   const exp = S.data.expected;
   if (exp) {
     const left = Math.max(0, exp - staff.length);
@@ -252,6 +254,7 @@ function render() {
 function drawList() {
   const { staff, colors } = S.data;
   const q = norm($('q').value.trim());
+  staff.sort((a, b) => (a.via ? 1 : 0) - (b.via ? 1 : 0));   // أساتذة المدرسة أولاً، ثم من يدرّس هنا أيضاً
   const rows = staff.filter(p => !q || norm([p.first, p.last, p.role].join(' ')).includes(q));
   if (!staff.length) { $('list').innerHTML = '<div class="empty">لم يسجّل أي إطار من مدرستك بعد</div>'; return; }
   if (!rows.length) { $('list').innerHTML = '<div class="empty">لا توجد نتيجة</div>'; return; }
@@ -260,7 +263,7 @@ function drawList() {
       <span class="num">${i + 1}</span>
       <div>
         <div class="n">${esc(p.first)} ${esc(p.last)}</div>
-        <div class="m">${esc(p.role)}</div>
+        <div class="m">${esc(p.role)}${p.via ? ` · <span style="color:var(--amber)">يدرّس هنا أيضاً — مسجّل عبر ${esc(p.via)}</span>` : ''}</div>
       </div>
     </div>`).join('');
 }
